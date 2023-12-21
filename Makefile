@@ -1,6 +1,9 @@
 NAME = ircserv
 
 SRCS = main.cpp\
+		srcs/server_conf.cpp\
+		srcs/client_conf.cpp\
+		srcs/poll_main.cpp\
 
 OBJS = $(SRCS:.cpp=.o)
 
