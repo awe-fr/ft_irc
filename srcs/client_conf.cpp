@@ -8,6 +8,7 @@ void	setup_client(t_server *serv)
 	serv->client[serv->client_co - 1].channel = "check_pass";
 	serv->client[serv->client_co - 1].nickname = "none";
 	serv->client[serv->client_co - 1].username = "none";
+	serv->client[serv->client_co - 1].op = false;
 	serv->id_gen++;
 }
 
@@ -21,5 +22,6 @@ void	full_setup_client(t_server *serv)
 		serv->client[i].channel = "check_pass";
 		serv->client[i].nickname = "none";
 		serv->client[i].username = "none";
+		serv->client[i].op = false;
 	}
 }

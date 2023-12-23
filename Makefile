@@ -6,6 +6,9 @@ SRCS = main.cpp\
 		srcs/poll_main.cpp\
 		srcs/ft_itoa.cpp\
 		srcs/utils.cpp\
+		srcs/nickname.cpp\
+		srcs/channel_conf.cpp\
+		srcs/topic.cpp\
 
 OBJS = $(SRCS:.cpp=.o)
 

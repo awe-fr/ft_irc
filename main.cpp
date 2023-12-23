@@ -16,6 +16,7 @@ int main(int ac, char **av)
     if (server_configuration(&serv, av[1], av[2 ]) == 1)
         return 1;
     full_setup_client(&serv);
+    full_setup_channel(&serv);
     std::cout << "Waiting connection..." << std::endl;
     if (poll_loop(&serv) == 1)
         return 1;

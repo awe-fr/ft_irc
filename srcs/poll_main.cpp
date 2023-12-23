@@ -74,6 +74,11 @@ int setusername(t_server *serv, int i, char *buff)
 		std::cerr << "Error : send failed" << std::endl;
 		return 1;
 	}
+    if ((send(serv->fds[i].fd, "[general]\n", sizeof("[general]\n"), 0)) == -1)
+	{
+		std::cerr << "Error : send failed" << std::endl;
+		return 1;
+	}
     serv->client[i].channel = "general";
     return 0;
 }
@@ -88,8 +93,8 @@ void    send_msg(t_server *serv, int i, std::string msg, std::string name)
         y++;
         std::cout << serv->client[y].username << std::endl;
     }
-    // if(y == i)
-    //     return 0;
+    if(y == i)
+        return;
     std::cout << y << std::endl;
     if ((send(serv->fds[y].fd, serv->client[i].username.c_str(), strlen(serv->client[i].username.c_str()), 0)) == -1)
 	{
@@ -150,6 +155,10 @@ int info_recv(t_server *serv)
                     {
                         if(strncmp(buff, "!mp ", 4) == 0)
                             send_msg(serv, i, extract_msg(buff, serv, i), find_username(buff, serv, i));
+                        else if (strncmp(buff, "!rename ", 8) == 0)
+                            change_nickname(serv, i, extract_nick(buff, serv, i));
+                        else if (strncmp(buff, "!topic", 6) == 0)
+                            topic_asked(serv, i, get_new_topic(buff, serv, i));
                         return 0;
                     }
 			        std::cout << serv->client[i].nickname << " : ";

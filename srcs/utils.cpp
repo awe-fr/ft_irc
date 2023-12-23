@@ -25,7 +25,6 @@ std::string extract_msg(char *buff, t_server *serv, int i)
         msg = tmp;
     else
         msg = " ";
-    std::cout << msg << "|" << tmp << "|" << buff << std::endl;
     return msg;
 }
 

@@ -9,10 +9,18 @@
 
 #define NBR_CLIENTS 10
 
+typedef struct s_channel {
+	int here;
+	std::string name;
+	std::string topic;
+	std::string key;
+}	t_channel;
+
 typedef struct s_client {
 	int id;
 	bool taken;
 	bool password;
+	bool op;
 	std::string channel;
 	std::string nickname;
 	std::string username;
@@ -27,6 +35,7 @@ typedef struct s_server {
 	sockaddr_in server_addr;
 	sockaddr_in client_addr;
 	socklen_t client_addr_size;
+	t_channel chan[NBR_CLIENTS];
 	pollfd fds[NBR_CLIENTS];
 	t_client client[NBR_CLIENTS + 1];
 }	t_server;
@@ -42,11 +51,19 @@ int	server_fd_conf(t_server *serv);
 void	full_setup_client(t_server *serv);
 void	setup_client(t_server *serv);
 
+// channel config
+void	setup_channel(t_server *serv);
+void	full_setup_channel(t_server *serv);
+
 // poll loop
 int poll_loop(t_server *serv);
 int info_recv(t_server *serv);
 int connection_ask(t_server *serv);
 void    disconnect(t_server *serv, int i);
+
+// topic
+void	topic_asked(t_server *serv, int i, std::string new_topic);
+std::string	get_new_topic(char *buff, t_server *serv, int i);
 
 // info check
 int	check_password(t_server *serv, char *buff, int bytesread, int i);
@@ -57,3 +74,7 @@ int setusername(t_server *serv, int i, char *buff);
 char	*ft_itoa(int n);
 std::string find_username(char *buff, t_server *serv, int i);
 std::string extract_msg(char *buff, t_server *serv, int i);
+
+// nickname
+std::string	extract_nick(char *buff, t_server *serv, int i);
+void	change_nickname(t_server *serv, int i, std::string name);
