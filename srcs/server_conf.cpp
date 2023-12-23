@@ -54,6 +54,7 @@ int	server_configuration(t_server *serv, char *port, char *pwd)
     if ((server_fd_conf(serv)) == 1)
 		return 1;
 	serv->client_co = 1;
+    serv->id_gen = 1;
 	serv->password = pwd;
     serv->client_addr_size = sizeof(serv->client_addr);
     return 0;

@@ -4,6 +4,8 @@ SRCS = main.cpp\
 		srcs/server_conf.cpp\
 		srcs/client_conf.cpp\
 		srcs/poll_main.cpp\
+		srcs/ft_itoa.cpp\
+		srcs/utils.cpp\
 
 OBJS = $(SRCS:.cpp=.o)
 

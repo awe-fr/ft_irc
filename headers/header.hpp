@@ -14,11 +14,13 @@ typedef struct s_client {
 	bool taken;
 	bool password;
 	std::string channel;
-	std::string name;
+	std::string nickname;
+	std::string username;
 }	t_client;
 
 typedef struct s_server {
 	int client_co;
+	int id_gen;
 	int server_socket;
 	int client_socket;
 	std::string password;
@@ -44,6 +46,14 @@ void	setup_client(t_server *serv);
 int poll_loop(t_server *serv);
 int info_recv(t_server *serv);
 int connection_ask(t_server *serv);
+void    disconnect(t_server *serv, int i);
 
 // info check
 int	check_password(t_server *serv, char *buff, int bytesread, int i);
+int setusername(t_server *serv, int i, char *buff);
+
+
+// aditional fonction
+char	*ft_itoa(int n);
+std::string find_username(char *buff, t_server *serv, int i);
+std::string extract_msg(char *buff, t_server *serv, int i);
