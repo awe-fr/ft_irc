@@ -6,7 +6,6 @@ void	setup_channel(t_server *serv, std::string name)
 	{
 		if (serv->chan[i].here == 0)
 		{
-			serv->chan[i].here++;
 			serv->chan[i].name = name;
 			serv->chan[i].topic = " ";
 			serv->chan[i].key = " ";

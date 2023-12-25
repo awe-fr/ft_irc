@@ -1,5 +1,19 @@
 #include "./../headers/header.hpp"
 
+void    change_count(t_server *serv, std::string old_name, std::string new_name)
+{
+    for (int t = 0; t != NBR_CLIENTS - 1; t++)
+	{
+	    if (old_name == serv->chan[t].name)
+	    	{serv->chan[t].here --; break;}
+	}
+    for (int t = 0; t != NBR_CLIENTS - 1; t++)
+	{
+		if (new_name == serv->chan[t].name)
+			{serv->chan[t].here ++; break;}
+	}
+}
+
 std::string extract_msg(char *buff, t_server *serv, int i)
 {
     char tmp[1024] = {0}; tmp[0] = '\0';

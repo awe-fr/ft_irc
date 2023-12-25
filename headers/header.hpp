@@ -23,6 +23,7 @@ typedef struct s_client {
 	bool taken;
 	bool password;
 	bool op;
+	std::string in_wait;
 	std::string channel;
 	std::string nickname;
 	std::string username;
@@ -58,8 +59,11 @@ void	setup_channel(t_server *serv, std::string name);
 void	full_setup_channel(t_server *serv);
 std::string get_channel_name(char *buff, t_server *serv, int i);
 void    create_channel(t_server *serv, int i, std::string ch_name);
-void    join(t_server *serv, int i, std::string chan_name, std::string pass);
-std::string get_channel_password(char *buff, t_server *serv, int i);
+void    join(t_server *serv, int i, std::string chan_name);
+// std::string get_channel_password(char *buff, t_server *serv, int i);
+void	check_pass_chan(t_server *serv, int i, char *buff);
+void	ok_to_join(t_server *serv, int i, char *buff);
+void    change_count(t_server *serv, std::string old_name, std::string new_name);
 
 // poll loop
 int poll_loop(t_server *serv);

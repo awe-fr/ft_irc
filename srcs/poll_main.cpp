@@ -57,9 +57,16 @@ int info_recv(t_server *serv)
                             topic_asked(serv, i, get_new_topic(buff, serv, i));
                         else if (strncmp(buff, "!create ", 8) == 0)
                             create_channel(serv, i, get_channel_name(buff, serv, i));
-                        // else if (strncmp(buff, "!join ", 6) == 0)
-                        //     join(serv, i, get_channel_name(buff, serv, i), get_channel_password(buff, serv, i));
+                        else if (strncmp(buff, "!join ", 6) == 0)
+                            join(serv, i, get_channel_name(buff, serv, i));
                         return 0;
+                    }
+                    if (serv->client[i].in_wait != "none")
+                    {
+                        if (strncmp(buff, "password ", 9) == 0)
+                            check_pass_chan(serv, i, buff);
+                        // if (strncmp(buff, "invite ", 7) == 0)
+                        //     ok_to_join(serv, i, buff);
                     }
 			        std::cout << serv->client[i].username << " : ";
             	    std::cout << buff << std::endl;

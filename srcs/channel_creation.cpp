@@ -30,14 +30,16 @@ void    create_channel(t_server *serv, int i, std::string ch_name)
         return;
     for(int y = 0; y != NBR_CLIENTS - 1; y++)
     {
-        if (serv->chan[y].name == ch_name)
+        if (serv->chan[y].name == ch_name && serv->chan[y].here >= 1)
         {
+            std::cout << serv->chan[y].here << std::endl;
             if ((send(serv->fds[i].fd, "This channel already exist\n", sizeof("This channel already exist\n"), 0)) == -1)
 		        std::cerr << "Error : send failed" << std::endl;
             return;
         }
     }
     setup_channel(serv, ch_name);
+    change_count(serv, serv->client[i].channel, ch_name);
     serv->client[i].channel = ch_name;
     serv->client[i].op = true;
     std::string to_print = "["; to_print += ch_name; to_print += "]\n";
