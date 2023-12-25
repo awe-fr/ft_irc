@@ -11,6 +11,8 @@
 
 typedef struct s_channel {
 	int here;
+	int limit;
+	bool invite;
 	std::string name;
 	std::string topic;
 	std::string key;
@@ -51,9 +53,13 @@ int	server_fd_conf(t_server *serv);
 void	full_setup_client(t_server *serv);
 void	setup_client(t_server *serv);
 
-// channel config
-void	setup_channel(t_server *serv);
+// channel
+void	setup_channel(t_server *serv, std::string name);
 void	full_setup_channel(t_server *serv);
+std::string get_channel_name(char *buff, t_server *serv, int i);
+void    create_channel(t_server *serv, int i, std::string ch_name);
+void    join(t_server *serv, int i, std::string chan_name, std::string pass);
+std::string get_channel_password(char *buff, t_server *serv, int i);
 
 // poll loop
 int poll_loop(t_server *serv);
@@ -78,3 +84,7 @@ std::string extract_msg(char *buff, t_server *serv, int i);
 // nickname
 std::string	extract_nick(char *buff, t_server *serv, int i);
 void	change_nickname(t_server *serv, int i, std::string name);
+
+// msg
+void    send_msg(t_server *serv, int i, std::string msg, std::string name);
+void    general_msg(t_server *serv, int i, char *buff);

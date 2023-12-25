@@ -9,6 +9,11 @@ SRCS = main.cpp\
 		srcs/nickname.cpp\
 		srcs/channel_conf.cpp\
 		srcs/topic.cpp\
+		srcs/msg.cpp\
+		srcs/password.cpp\
+		srcs/username.cpp\
+		srcs/channel_creation.cpp\
+		srcs/join.cpp\
 
 OBJS = $(SRCS:.cpp=.o)
 

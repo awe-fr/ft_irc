@@ -9,14 +9,16 @@ void	topic_asked(t_server *serv, int i, std::string new_topic)
 	{
 		for (int y = 0; y != NBR_CLIENTS - 1; y++)
 		{
+			std::cout << serv->chan[y].name << " : " << serv->client[i].channel << std::endl;
 			if (serv->chan[y].name == serv->client[i].channel)
 			{
 				msg += serv->chan[y].topic;
 				msg += "\n";
 				break;
 			}
-			msg = "[server] Couldn't find the channel\n";
 		}
+		if (msg == "[server] Topic is : ")
+			msg = "[server] Couldn't find the channel\n";
 		if ((send(serv->fds[i].fd, msg.c_str(), strlen(msg.c_str()), 0)) == -1)
 		    std::cerr << "Error : send failed" << std::endl;
 		return;
@@ -32,10 +34,12 @@ void	topic_asked(t_server *serv, int i, std::string new_topic)
 				return;
 			}
 			serv->chan[y].topic = new_topic;
+			msg = "[server] Now topic is : "; msg += new_topic; msg += "\n"; 
 			break;
 		}
 	}
-	msg = "[server] Couldn't find the channel\n";
+	if (msg == "[server] Topic is : ")
+		msg = "[server] Couldn't find the channel\n";
 	if ((send(serv->fds[i].fd, msg.c_str(), strlen(msg.c_str()), 0)) == -1)
 		std::cerr << "Error : send failed" << std::endl;
 	return;

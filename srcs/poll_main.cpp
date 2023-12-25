@@ -1,30 +1,5 @@
 #include "./../headers/header.hpp"
 
-int	check_password(t_server *serv, char *buff, int bytesread, int i)
-{
-	if (serv->client[i].password == false)
-	{
-		if (strncmp(buff, serv->password.c_str(), bytesread - 1) == 0 && bytesread - 1 > 0)
-        	serv->client[i].password = true;
-		if (serv->client[i].password == true)
-        {
-            if ((send(serv->fds[i].fd, "Please enter username : ", sizeof("Please enter username : "), 0)) == -1)
-		    {
-			    std::cerr << "Error : send failed" << std::endl;
-			    return 1;
-		    }
-			return 1;
-        }
-		if ((send(serv->fds[i].fd, "Please enter password : ", sizeof("Please enter password : "), 0)) == -1)
-		{
-			std::cerr << "Error : send failed" << std::endl;
-			return 1;
-		}
-		return 1;
-	}
-	return 0;
-}
-
 void    disconnect(t_server *serv, int i)
 {
     std::cout << "deconnection" << std::endl;
@@ -41,85 +16,6 @@ void    disconnect(t_server *serv, int i)
     serv->client[i].taken = false;
     serv->client_co--;
 }
-
-int setusername(t_server *serv, int i, char *buff)
-{
-    if (strlen(buff) - 1 >= 21)
-    {
-        if ((send(serv->fds[i].fd, "username too long\nPlease enter username : ", sizeof("username too long\nPlease enter username : "), 0)) == -1)
-	    {
-		    std::cerr << "Error : send failed" << std::endl;
-		    return 1;
-	    }
-        return 0;
-    }
-    buff[strlen(buff) - 1] = '\0';
-    serv->client[i].username = buff;
-    serv->client[i].username += "#";
-    char *tmp = ft_itoa(serv->client[i].id);
-    serv->client[i].username += tmp;
-    free(tmp);
-    if ((send(serv->fds[i].fd, "now your username is : ", sizeof("now your username is : "), 0)) == -1)
-	{
-		std::cerr << "Error : send failed" << std::endl;
-		return 1;
-	}
-    if ((send(serv->fds[i].fd, serv->client[i].username.c_str(), strlen(serv->client[i].username.c_str()), 0)) == -1)
-	{
-		std::cerr << "Error : send failed" << std::endl;
-		return 1;
-	}
-    if ((send(serv->fds[i].fd, "\n", sizeof("\n"), 0)) == -1)
-	{
-		std::cerr << "Error : send failed" << std::endl;
-		return 1;
-	}
-    if ((send(serv->fds[i].fd, "[general]\n", sizeof("[general]\n"), 0)) == -1)
-	{
-		std::cerr << "Error : send failed" << std::endl;
-		return 1;
-	}
-    serv->client[i].channel = "general";
-    return 0;
-}
-
-void    send_msg(t_server *serv, int i, std::string msg, std::string name)
-{
-    if (name == "noname" || msg == " ")
-        return;
-    std::cout << name << std::endl;
-    int y = 1;
-    while(y < NBR_CLIENTS - 2 && serv->client[y].username != name){
-        y++;
-        std::cout << serv->client[y].username << std::endl;
-    }
-    if(y == i)
-        return;
-    std::cout << y << std::endl;
-    if ((send(serv->fds[y].fd, serv->client[i].username.c_str(), strlen(serv->client[i].username.c_str()), 0)) == -1)
-	{
-		std::cerr << "Error : send failed" << std::endl;
-		return;
-	}
-    if ((send(serv->fds[y].fd, " : ", sizeof(" : "), 0)) == -1)
-	{
-		std::cerr << "Error : send failed" << std::endl;
-		return;
-	}
-    if ((send(serv->fds[y].fd, msg.c_str(), strlen(msg.c_str()), 0)) == -1)
-	{
-		std::cerr << "Error : send failed" << std::endl;
-		return;
-	}
-    if ((send(serv->fds[y].fd, "\n", sizeof("\n"), 0)) == -1)
-	{
-		std::cerr << "Error : send failed" << std::endl;
-		return;
-	}
-    return;
-}
-
-
 
 int info_recv(t_server *serv)
 {
@@ -159,10 +55,15 @@ int info_recv(t_server *serv)
                             change_nickname(serv, i, extract_nick(buff, serv, i));
                         else if (strncmp(buff, "!topic", 6) == 0)
                             topic_asked(serv, i, get_new_topic(buff, serv, i));
+                        else if (strncmp(buff, "!create ", 8) == 0)
+                            create_channel(serv, i, get_channel_name(buff, serv, i));
+                        // else if (strncmp(buff, "!join ", 6) == 0)
+                        //     join(serv, i, get_channel_name(buff, serv, i), get_channel_password(buff, serv, i));
                         return 0;
                     }
-			        std::cout << serv->client[i].nickname << " : ";
+			        std::cout << serv->client[i].username << " : ";
             	    std::cout << buff << std::endl;
+                    general_msg(serv, i, buff);
                 }
             }
         }

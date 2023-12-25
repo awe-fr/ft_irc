@@ -1,15 +1,7 @@
 #include "./../headers/header.hpp"
 
-void	setup_channel(t_server *serv, int i, std::string name)
+void	setup_channel(t_server *serv, std::string name)
 {
-	if (name == " ")
-	{
-		if ((send(serv->fds[i].fd, "Bad name\n", sizeof("Bad name\n"), 0)) == -1)
-		{
-			std::cerr << "Error : send failed" << std::endl;
-			return;
-		}
-	}
 	for (int i = 1; i != NBR_CLIENTS - 1; i++)
 	{
 		if (serv->chan[i].here == 0)
@@ -18,6 +10,8 @@ void	setup_channel(t_server *serv, int i, std::string name)
 			serv->chan[i].name = name;
 			serv->chan[i].topic = " ";
 			serv->chan[i].key = " ";
+			serv->chan[i].limit = 0;
+			serv->chan[i].invite = false;
 			break;
 		}
 	}
@@ -29,11 +23,15 @@ void	full_setup_channel(t_server *serv)
 	serv->chan[0].name = "general";
 	serv->chan[0].topic = "Default channel of this server";
 	serv->chan[0].key = " ";
+	serv->chan[0].limit = 0;
+	serv->chan[0].invite = false;
 	for (int i = 1; i != NBR_CLIENTS - 1; i++)
 	{
 		serv->chan[i].here = 0;
 		serv->chan[i].name = " ";
 		serv->chan[i].topic = " ";
 		serv->chan[i].key = " ";
+		serv->chan[i].limit = 0;
+		serv->chan[i].invite = false;
 	}
 }
