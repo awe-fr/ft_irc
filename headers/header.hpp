@@ -103,3 +103,6 @@ void    general_msg(t_server *serv, int i, char *buff);
 // invite
 void	change_invite(t_server *serv, int i);
 void	invite(t_server *serv, int i, std::string name);
+
+// op
+void    give_op(t_server *serv, int i, std::string name);

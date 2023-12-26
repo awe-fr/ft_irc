@@ -71,6 +71,8 @@ int info_recv(t_server *serv)
                             change_invite(serv, i);
                         else if (strncmp(buff, "!MODE-k", 7) == 0)
                             change_pass(serv, i, buff);
+                        else if (strncmp(buff, "!MODE-o", 7) == 0)
+                            give_op(serv, i, find_username(buff, serv, i));
                         return 0;
                     }
                     if (serv->client[i].in_wait != "none")
