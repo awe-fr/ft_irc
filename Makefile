@@ -14,6 +14,9 @@ SRCS = main.cpp\
 		srcs/username.cpp\
 		srcs/channel_creation.cpp\
 		srcs/join.cpp\
+		srcs/limit.cpp\
+		srcs/kick.cpp\
+		srcs/invite.cpp\
 
 OBJS = $(SRCS:.cpp=.o)
 

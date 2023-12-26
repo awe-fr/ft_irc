@@ -59,14 +59,27 @@ int info_recv(t_server *serv)
                             create_channel(serv, i, get_channel_name(buff, serv, i));
                         else if (strncmp(buff, "!join ", 6) == 0)
                             join(serv, i, get_channel_name(buff, serv, i));
+                        else if (strncmp(buff, "!kick ", 6) == 0)
+                            kick(serv, i, find_username(buff, serv, i));
+                        else if (strncmp(buff, "!invite ", 8) == 0)
+                            invite(serv, i, find_username(buff, serv, i));
+                        else if (strncmp(buff, "!MODE-l", 7) == 0)
+                            limit(serv, i, buff);
+                        else if (strncmp(buff, "!MODE-t", 7) == 0)
+                            topic_restriction(serv, i);
+                        else if (strncmp(buff, "!MODE-i", 7) == 0)
+                            change_invite(serv, i);
+                        else if (strncmp(buff, "!MODE-k", 7) == 0)
+                            change_pass(serv, i, buff);
                         return 0;
                     }
                     if (serv->client[i].in_wait != "none")
                     {
-                        if (strncmp(buff, "password ", 9) == 0)
+                        if (strncmp(serv->client[i].in_wait.c_str(), "password ", 9) == 0)
                             check_pass_chan(serv, i, buff);
-                        // if (strncmp(buff, "invite ", 7) == 0)
-                        //     ok_to_join(serv, i, buff);
+                        if (strncmp(serv->client[i].in_wait.c_str(), "invite ", 7) == 0)
+                            ok_to_join(serv, i, buff);
+                        return 0;
                     }
 			        std::cout << serv->client[i].username << " : ";
             	    std::cout << buff << std::endl;

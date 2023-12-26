@@ -13,6 +13,7 @@ typedef struct s_channel {
 	int here;
 	int limit;
 	bool invite;
+	bool topic_perm;
 	std::string name;
 	std::string topic;
 	std::string key;
@@ -64,6 +65,11 @@ void    join(t_server *serv, int i, std::string chan_name);
 void	check_pass_chan(t_server *serv, int i, char *buff);
 void	ok_to_join(t_server *serv, int i, char *buff);
 void    change_count(t_server *serv, std::string old_name, std::string new_name);
+void	limit(t_server *serv, int i, char *buff);
+int getlimit(char *buff, t_server *serv, int i);
+void	kick(t_server *serv, int i, std::string name);
+void	change_pass(t_server *serv, int i, char *buff);
+std::string	get_pwd(char *buff, t_server *serv, int i);
 
 // poll loop
 int poll_loop(t_server *serv);
@@ -74,6 +80,7 @@ void    disconnect(t_server *serv, int i);
 // topic
 void	topic_asked(t_server *serv, int i, std::string new_topic);
 std::string	get_new_topic(char *buff, t_server *serv, int i);
+void	topic_restriction(t_server *serv, int i);
 
 // info check
 int	check_password(t_server *serv, char *buff, int bytesread, int i);
@@ -92,3 +99,7 @@ void	change_nickname(t_server *serv, int i, std::string name);
 // msg
 void    send_msg(t_server *serv, int i, std::string msg, std::string name);
 void    general_msg(t_server *serv, int i, char *buff);
+
+// invite
+void	change_invite(t_server *serv, int i);
+void	invite(t_server *serv, int i, std::string name);

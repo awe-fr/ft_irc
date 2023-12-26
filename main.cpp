@@ -19,7 +19,10 @@ int main(int ac, char **av)
     full_setup_channel(&serv);
     std::cout << "Waiting connection..." << std::endl;
     if (poll_loop(&serv) == 1)
+    {
+        close(serv.server_socket);
         return 1;
+    }
     close(serv.server_socket);
     return 0;
 }
