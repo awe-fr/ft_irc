@@ -10,6 +10,7 @@ void	setup_client(t_server *serv)
 	serv->client[serv->client_co - 1].username = "none";
 	serv->client[serv->client_co - 1].op = false;
 	serv->client[serv->client_co - 1].in_wait = "none";
+	serv->client[serv->client_co - 1].full_msg[0] = '\0';
 	serv->id_gen++;
 }
 
@@ -25,5 +26,6 @@ void	full_setup_client(t_server *serv)
 		serv->client[i].username = "none";
 		serv->client[i].op = false;
 		serv->client[i].in_wait = "none";
+		serv->client[i].full_msg[0] = '\0';
 	}
 }

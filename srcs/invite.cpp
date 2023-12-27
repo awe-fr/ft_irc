@@ -14,7 +14,7 @@ void	change_invite(t_server *serv, int i)
 		{
 			if (serv->chan[y].invite == true){serv->chan[y].invite = false;}
 			else if (serv->chan[y].invite == false){serv->chan[y].invite = true;}
-			if ((send(serv->fds[i].fd, "[server] Topic invite only changed\n", strlen("[server] Topic invite only changed\n"), 0)) == -1)
+			if ((send(serv->fds[i].fd, "[server] Invite only changed\n", strlen("[server] Invite only changed\n"), 0)) == -1)
 				std::cerr << "Error : send failed" << std::endl;
 			return;
 		}

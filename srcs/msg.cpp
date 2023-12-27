@@ -32,6 +32,8 @@ void    general_msg(t_server *serv, int i, char *buff)
         {
             if ((send(serv->fds[y].fd, to_send.c_str(), strlen(to_send.c_str()), 0)) == -1)
 		        std::cerr << "Error : send failed" << std::endl;
+            if (serv->skibidi_bot == true)
+                skibidi_on(serv, y);
         }
     }
 }

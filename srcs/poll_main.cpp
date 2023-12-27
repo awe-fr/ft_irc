@@ -17,6 +17,57 @@ void    disconnect(t_server *serv, int i)
     serv->client_co--;
 }
 
+void    choose(t_server *serv, int i, char *buff)
+{
+    if (strlen(buff) >= 1)
+    {
+        if (serv->client[i].in_wait != "none")
+        {
+            if (strncmp(serv->client[i].in_wait.c_str(), "password ", 9) == 0)
+                check_pass_chan(serv, i, buff);
+            if (strncmp(serv->client[i].in_wait.c_str(), "invite ", 7) == 0)
+                ok_to_join(serv, i, buff);
+            serv->client[i].full_msg[0] = '\0';
+            return;
+        }
+        if(strncmp(buff, "!", 1) == 0)
+        {
+            if(strncmp(buff, "!mp ", 4) == 0)
+                send_msg(serv, i, extract_msg(buff, serv, i), find_username(buff, serv, i));
+            else if (strncmp(buff, "!rename ", 8) == 0)
+                change_nickname(serv, i, extract_nick(buff, serv, i));
+            else if (strncmp(buff, "!topic", 6) == 0)
+                topic_asked(serv, i, get_new_topic(buff, serv, i));
+            else if (strncmp(buff, "!create ", 8) == 0)
+                create_channel(serv, i, get_channel_name(buff, serv, i));
+            else if (strncmp(buff, "!join ", 6) == 0)
+                join(serv, i, get_channel_name(buff, serv, i));
+            else if (strncmp(buff, "!kick ", 6) == 0)
+                kick(serv, i, find_username(buff, serv, i));
+            else if (strncmp(buff, "!invite ", 8) == 0)
+                invite(serv, i, find_username(buff, serv, i));
+            else if (strncmp(buff, "!MODE-l", 7) == 0)
+                limit(serv, i, buff);
+            else if (strncmp(buff, "!MODE-t", 7) == 0)
+                topic_restriction(serv, i);
+            else if (strncmp(buff, "!MODE-i", 7) == 0)
+                change_invite(serv, i);
+            else if (strncmp(buff, "!MODE-k", 7) == 0)
+                change_pass(serv, i, buff);
+            else if (strncmp(buff, "!MODE-o", 7) == 0)
+                give_op(serv, i, find_username(buff, serv, i));
+            else if (strncmp(buff, "!SKIBIDI", 8) == 0)
+                skibidi_activ(serv);
+            serv->client[i].full_msg[0] = '\0';
+            return;
+        }
+		std::cout << serv->client[i].username << " : ";
+        std::cout << buff << std::endl;
+        general_msg(serv, i, buff);
+        serv->client[i].full_msg[0] = '\0';
+    }
+}
+
 int info_recv(t_server *serv)
 {
 	for (int i = 1; i < serv->client_co; i++)
@@ -34,7 +85,7 @@ int info_recv(t_server *serv)
                 else
                     return 0;
             }
-            std::cout << "entrer detecter " << i << std::endl;
+            std::cout << "entrer detecter " << i << bytesread << std::endl;
             if (bytesread == -1)
                 std::cout << "recv -1" << std::endl;
             else if (bytesread == 0)
@@ -44,49 +95,14 @@ int info_recv(t_server *serv)
             }
             else
             {
-                buff[strlen(buff) - 1] = '\0';
-                if (strlen(buff) >= 1)
-                {
-                    if(strncmp(buff, "!", 1) == 0)
-                    {
-                        if(strncmp(buff, "!mp ", 4) == 0)
-                            send_msg(serv, i, extract_msg(buff, serv, i), find_username(buff, serv, i));
-                        else if (strncmp(buff, "!rename ", 8) == 0)
-                            change_nickname(serv, i, extract_nick(buff, serv, i));
-                        else if (strncmp(buff, "!topic", 6) == 0)
-                            topic_asked(serv, i, get_new_topic(buff, serv, i));
-                        else if (strncmp(buff, "!create ", 8) == 0)
-                            create_channel(serv, i, get_channel_name(buff, serv, i));
-                        else if (strncmp(buff, "!join ", 6) == 0)
-                            join(serv, i, get_channel_name(buff, serv, i));
-                        else if (strncmp(buff, "!kick ", 6) == 0)
-                            kick(serv, i, find_username(buff, serv, i));
-                        else if (strncmp(buff, "!invite ", 8) == 0)
-                            invite(serv, i, find_username(buff, serv, i));
-                        else if (strncmp(buff, "!MODE-l", 7) == 0)
-                            limit(serv, i, buff);
-                        else if (strncmp(buff, "!MODE-t", 7) == 0)
-                            topic_restriction(serv, i);
-                        else if (strncmp(buff, "!MODE-i", 7) == 0)
-                            change_invite(serv, i);
-                        else if (strncmp(buff, "!MODE-k", 7) == 0)
-                            change_pass(serv, i, buff);
-                        else if (strncmp(buff, "!MODE-o", 7) == 0)
-                            give_op(serv, i, find_username(buff, serv, i));
-                        return 0;
-                    }
-                    if (serv->client[i].in_wait != "none")
-                    {
-                        if (strncmp(serv->client[i].in_wait.c_str(), "password ", 9) == 0)
-                            check_pass_chan(serv, i, buff);
-                        if (strncmp(serv->client[i].in_wait.c_str(), "invite ", 7) == 0)
-                            ok_to_join(serv, i, buff);
-                        return 0;
-                    }
-			        std::cout << serv->client[i].username << " : ";
-            	    std::cout << buff << std::endl;
-                    general_msg(serv, i, buff);
-                }
+                if (serv->client[i].full_msg[0] != '\0')
+                    serv->client[i].full_msg += buff;
+                else 
+                    serv->client[i].full_msg = buff;
+                if (serv->client[i].full_msg[strlen(serv->client[i].full_msg.c_str()) - 1] != 10)
+                    return 0;
+                serv->client[i].full_msg[strlen(serv->client[i].full_msg.c_str()) - 1] = '\0';
+                choose(serv, i, (char *)serv->client[i].full_msg.c_str());
             }
         }
     }

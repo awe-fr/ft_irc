@@ -18,6 +18,7 @@ SRCS = main.cpp\
 		srcs/kick.cpp\
 		srcs/invite.cpp\
 		srcs/op.cpp\
+		srcs/skibidi.cpp\
 
 OBJS = $(SRCS:.cpp=.o)
 

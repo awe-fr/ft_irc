@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <poll.h>
+#include <signal.h>
 
 #define NBR_CLIENTS 10
 
@@ -28,6 +29,7 @@ typedef struct s_client {
 	std::string channel;
 	std::string nickname;
 	std::string username;
+	std::string full_msg;
 }	t_client;
 
 typedef struct s_server {
@@ -35,6 +37,7 @@ typedef struct s_server {
 	int id_gen;
 	int server_socket;
 	int client_socket;
+	bool	skibidi_bot;
 	std::string password;
 	sockaddr_in server_addr;
 	sockaddr_in client_addr;
@@ -76,6 +79,7 @@ int poll_loop(t_server *serv);
 int info_recv(t_server *serv);
 int connection_ask(t_server *serv);
 void    disconnect(t_server *serv, int i);
+void	choose(t_server *serv, int i, char *buff);
 
 // topic
 void	topic_asked(t_server *serv, int i, std::string new_topic);
@@ -106,3 +110,7 @@ void	invite(t_server *serv, int i, std::string name);
 
 // op
 void    give_op(t_server *serv, int i, std::string name);
+
+// bot
+void	skibidi_activ(t_server *serv);
+void	skibidi_on(t_server *serv, int i);
