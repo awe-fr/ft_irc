@@ -6,11 +6,10 @@ void    join(t_server *serv, int i, std::string chan_name)
 	{
 		if (chan_name == serv->chan[y].name)
 		{
-			if (serv->chan[y].key != " ")
+			if (serv->chan[y].here == 0 && serv->chan[y].name != "general")
 			{
-				if ((send(serv->fds[i].fd, "Please enter the password : ", strlen("Please enter the password : "), 0)) == -1)
+				if ((send(serv->fds[i].fd, "This channel dosen't exist\n", strlen("This channel dosen't exist\n"), 0)) == -1)
 		        	std::cerr << "Error : send failed" << std::endl;
-				serv->client[i].in_wait = "password "; serv->client[i].in_wait += serv->chan[y].name;
 				return;
 			}
 			if (serv->chan[y].invite == true)
@@ -19,15 +18,16 @@ void    join(t_server *serv, int i, std::string chan_name)
 		        	std::cerr << "Error : send failed" << std::endl;
 				return;
 			}
+			if (serv->chan[y].key != " ")
+			{
+				if ((send(serv->fds[i].fd, "Please enter the password : ", strlen("Please enter the password : "), 0)) == -1)
+		        	std::cerr << "Error : send failed" << std::endl;
+				serv->client[i].in_wait = "password "; serv->client[i].in_wait += serv->chan[y].name;
+				return;
+			}
 			if (serv->chan[y].limit <= serv->chan[y].here && serv->chan[y].limit != 0)
 			{
 				if ((send(serv->fds[i].fd, "This channel is full\n", strlen("This channel is full\n"), 0)) == -1)
-		        	std::cerr << "Error : send failed" << std::endl;
-				return;
-			}
-			if (serv->chan[y].here == 0 && serv->chan[y].name != "general")
-			{
-				if ((send(serv->fds[i].fd, "This channel dosen't exist\n", strlen("This channel dosen't exist\n"), 0)) == -1)
 		        	std::cerr << "Error : send failed" << std::endl;
 				return;
 			}

@@ -2,7 +2,24 @@
 
 void    disconnect(t_server *serv, int i)
 {
-    std::cout << "deconnection" << std::endl;
+    std::string to_send = serv->client[i].username; to_send += " disconnect\n";
+    std::cout << "disconnect" << std::endl;
+    for (int y = 1; y != NBR_CLIENTS - 1; y++)
+    {
+        if (serv->client[i].channel == serv->chan[y].name)
+        {
+            serv->chan[y].here--;
+            break;
+        }
+    }
+    for (int y = 1; y != NBR_CLIENTS - 1; y++)
+    {
+        if (serv->client[i].channel == serv->client[y].channel)
+        {
+            if ((send(serv->fds[y].fd, to_send.c_str(), strlen(to_send.c_str()), 0)) == -1)
+		        std::cerr << "Error : send failed" << std::endl;
+        }
+    }
     while(i < NBR_CLIENTS - 2 && serv->fds[i + 1].fd != -1)
     {
         serv->fds[i].fd = serv->fds[i + 1].fd; 
@@ -19,7 +36,7 @@ void    disconnect(t_server *serv, int i)
 
 void    choose(t_server *serv, int i, char *buff)
 {
-    if (strlen(buff) >= 1)
+    if (strlen(buff) >= 1 && strlen(buff) <= 1024)
     {
         if (serv->client[i].in_wait != "none")
         {
@@ -57,13 +74,26 @@ void    choose(t_server *serv, int i, char *buff)
             else if (strncmp(buff, "!MODE-o", 7) == 0)
                 give_op(serv, i, find_username(buff, serv, i));
             else if (strncmp(buff, "!SKIBIDI", 8) == 0)
-                skibidi_activ(serv);
+                skibidi_activ(serv, i);
+            else if (strncmp(buff, "!help", 5) == 0)
+                help(serv, i);
+            else
+            {
+                if ((send(serv->fds[i].fd, "Command not found, !help\n", strlen("Command not found, !help\n"), 0)) == -1)
+		            std::cerr << "Error : send failed" << std::endl;
+            }
             serv->client[i].full_msg[0] = '\0';
             return;
         }
 		std::cout << serv->client[i].username << " : ";
         std::cout << buff << std::endl;
         general_msg(serv, i, buff);
+        serv->client[i].full_msg[0] = '\0';
+    }
+    else if (strlen(buff) > 1024)
+    {
+        if ((send(serv->fds[i].fd, "Character limit is 1024\n", strlen("Character limit is 1024\n"), 0)) == -1)
+		    std::cerr << "Error : send failed" << std::endl;
         serv->client[i].full_msg[0] = '\0';
     }
 }
@@ -74,7 +104,7 @@ int info_recv(t_server *serv)
 	{
         if (serv->fds[i].revents & POLLIN)
 		{
-            char buff[1024] = {0};
+            char buff[2048] = {0};
             int bytesread = recv(serv->fds[i].fd, buff, sizeof(buff), 0);
 			if (check_password(serv, buff, bytesread, i) == 1)
 				return 0;

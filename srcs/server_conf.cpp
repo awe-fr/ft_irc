@@ -57,6 +57,5 @@ int	server_configuration(t_server *serv, char *port, char *pwd)
     serv->id_gen = 1;
 	serv->password = pwd;
     serv->client_addr_size = sizeof(serv->client_addr);
-    serv->skibidi_bot = false;
     return 0;
 }

@@ -32,8 +32,14 @@ void    general_msg(t_server *serv, int i, char *buff)
         {
             if ((send(serv->fds[y].fd, to_send.c_str(), strlen(to_send.c_str()), 0)) == -1)
 		        std::cerr << "Error : send failed" << std::endl;
-            if (serv->skibidi_bot == true)
-                skibidi_on(serv, y);
         }
     }
+    for(int z = 1; z != NBR_CLIENTS - 1; z++)
+    {
+        if(serv->chan[z].name == serv->client[i].channel)
+        {
+            if (serv->chan[z].skibidi_bot == true)
+                skibidi_on(serv, i);
+        }
+    }            
 }

@@ -17,6 +17,7 @@ int main(int ac, char **av)
         std::cerr << "Please entre a valid password" << std::endl;
         return 1;
     }
+    srand(time(NULL));
     t_server serv;
     if (server_configuration(&serv, av[1], av[2 ]) == 1)
         return 1;
