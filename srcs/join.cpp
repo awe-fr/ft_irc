@@ -18,17 +18,17 @@ void    join(t_server *serv, int i, std::string chan_name)
 		        	std::cerr << "Error : send failed" << std::endl;
 				return;
 			}
+			if (serv->chan[y].limit <= serv->chan[y].here && serv->chan[y].limit != 0)
+			{
+				if ((send(serv->fds[i].fd, "This channel is full\n", strlen("This channel is full\n"), 0)) == -1)
+		        	std::cerr << "Error : send failed" << std::endl;
+				return;
+			}
 			if (serv->chan[y].key != " ")
 			{
 				if ((send(serv->fds[i].fd, "Please enter the password : ", strlen("Please enter the password : "), 0)) == -1)
 		        	std::cerr << "Error : send failed" << std::endl;
 				serv->client[i].in_wait = "password "; serv->client[i].in_wait += serv->chan[y].name;
-				return;
-			}
-			if (serv->chan[y].limit <= serv->chan[y].here && serv->chan[y].limit != 0)
-			{
-				if ((send(serv->fds[i].fd, "This channel is full\n", strlen("This channel is full\n"), 0)) == -1)
-		        	std::cerr << "Error : send failed" << std::endl;
 				return;
 			}
 			std::string chan_print = "["; chan_print += serv->chan[y].name; chan_print += "]\n";
